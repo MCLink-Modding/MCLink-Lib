@@ -1,0 +1,26 @@
+version = "0.4"
+if (System.getenv().BUILD_NUMBER != null) version += "." + System.getenv().BUILD_NUMBER
+
+ext.getChangeLog = { ->
+    def outStream = new ByteArrayOutputStream()
+    exec {
+        executable = 'git'
+        args = ['log', '-n', '1', "--format='%B'"]
+        standardOutput = outStream
+    }
+    return outStream.toString().replaceAll("^\\s*'\\s*|\\s*'\\s*\$", "").replaceAll("[\\r\\n]+", "\n")
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    compile 'com.google.guava:guava:17.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.apache.logging.log4j:log4j-core:2.0-beta9'
+    compile 'org.jetbrains:annotations:15.0'
+}
